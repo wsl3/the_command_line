@@ -22,7 +22,8 @@ int main(int argc, char * argv[])
 	while(read(fp, &current_utmp, size) == size)
 	{
 		show_info(&current_utmp);
-	}	
+	}
+	close(fp);	
 	return 0;
 }
 
