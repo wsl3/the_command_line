@@ -8,6 +8,7 @@
 #define MAXARGLIST 20
 #define MAXLEN 100
 
+void check_exit(char* arg);
 void parent_process();
 char* make_string(char buffer[]);
 void execte(char* arglist[]);
@@ -16,20 +17,24 @@ int main(int argc, char* argv[])
 {
 	int argsNum = 0; //arglist[]的下标
 	int child;
+	char* arg;
 	char buffer[MAXLEN]; //这里不是char* buffer; 否则会发生段错误
 	char* arglist[MAXARGLIST+1];
 
 	while( argsNum < MAXARGLIST )
 	{
-		printf("Args[%d]$:", argsNum);
+		printf("Args[%d]$: ", argsNum);
 		//arg 不是"\n" 并且读取成功
 		if( fgets(buffer, MAXLEN, stdin) && buffer[0] != '\n')
-		{
-		    arglist[argsNum++] = make_string(buffer);
+		{	
+			arg = make_string(buffer);
+			check_exit(arg);
+			arglist[argsNum++] = arg;
 		}
 		else
 		{
 			if(argsNum>0){
+				//程序执行
 				arglist[argsNum] = NULL;
 				child = fork();
 				switch(child)
@@ -43,6 +48,14 @@ int main(int argc, char* argv[])
 		}	
 	}
 	return 0;
+}
+
+void check_exit(char* arg)
+{
+	if(strcmp("exit", arg) == 0)
+	{
+		exit(0);
+	}
 }
 
 void parent_process()
